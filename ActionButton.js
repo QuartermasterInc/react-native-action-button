@@ -27,6 +27,7 @@ export default class ActionButton extends Component {
     };
 
     this.anim = new Animated.Value(props.active ? 1 : 0);
+    this.hidden = new Animated.Value(props.shown ? 1 : 0);
     this.timeout = null;
   }
 
@@ -57,6 +58,14 @@ export default class ActionButton extends Component {
         resetToken: nextProps.resetToken,
         active: nextProps.active
       });
+    }
+    
+    if (nextProps.shown !== this.props.shown) {
+      if (nextProps.shown === true) {
+        Animated.timing (this.hidden, { toValue: 1, duration: 250 })
+      } else {
+        Animated.timing (this.hidden, { toValue: 0, duration: 250 })
+      }
     }
   }
 
@@ -137,6 +146,7 @@ export default class ActionButton extends Component {
     );
   }
 
+  
   _renderMainButton() {
     const animatedViewStyle = {
       transform: [
@@ -163,6 +173,10 @@ export default class ActionButton extends Component {
           this.props.btnOutRange || this.props.buttonColor
         ]
       }),
+      opacity: this.hidden.interpolate({
+        inputRange: [0, 1],
+        outputRange: [0, 1],
+      })
       width: this.props.size,
       height: this.props.size,
       borderRadius: this.props.size / 2
@@ -332,6 +346,7 @@ ActionButton.Item = ActionButtonItem;
 ActionButton.propTypes = {
   resetToken: PropTypes.any,
   active: PropTypes.bool,
+  shown: PropTypes.bool,
 
   position: PropTypes.string,
   elevation: PropTypes.number,
@@ -374,6 +389,7 @@ ActionButton.propTypes = {
 ActionButton.defaultProps = {
   resetToken: null,
   active: false,
+  shown: true,
   bgColor: "transparent",
   bgOpacity: 1,
   buttonColor: "rgba(0,0,0,1)",
