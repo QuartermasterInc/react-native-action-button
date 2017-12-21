@@ -176,7 +176,7 @@ export default class ActionButton extends Component {
       opacity: this.hidden.interpolate({
         inputRange: [0, 1],
         outputRange: [0, 1],
-      })
+      }),
       width: this.props.size,
       height: this.props.size,
       borderRadius: this.props.size / 2
