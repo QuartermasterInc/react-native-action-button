@@ -166,8 +166,6 @@ export default class ActionButton extends Component {
       ]
     };
 
-    console.log(this.hidden)
-
     const wrapperStyle = {
       backgroundColor: this.anim.interpolate({
         inputRange: [0, 1],
