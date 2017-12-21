@@ -27,7 +27,8 @@ export default class ActionButton extends Component {
     };
 
     this.anim = new Animated.Value(props.active ? 1 : 0);
-    this.hidden = new Animated.Value(props.shown ? 1 : 0);
+    this.hidden = new Animated.Value(0);
+    Animated.timing(this.hidden, { toValue: 1, duration: 250 }).start()
     this.timeout = null;
   }
 
@@ -62,9 +63,9 @@ export default class ActionButton extends Component {
     
     if (nextProps.shown !== this.props.shown) {
       if (nextProps.shown === true) {
-        Animated.timing (this.hidden, { toValue: 1, duration: 250 })
+        Animated.timing(this.hidden, { toValue: 1, duration: 250 }).start()
       } else {
-        Animated.timing (this.hidden, { toValue: 0, duration: 250 })
+        Animated.timing(this.hidden, { toValue: 0, duration: 250 }).start()
       }
     }
   }
@@ -164,6 +165,8 @@ export default class ActionButton extends Component {
         }
       ]
     };
+
+    console.log(this.hidden)
 
     const wrapperStyle = {
       backgroundColor: this.anim.interpolate({
