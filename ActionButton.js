@@ -32,7 +32,12 @@ export default class ActionButton extends Component {
     this.timeout = null;
   }
 
+  componentDidMount() {
+    this.mounted = true;
+  }
+
   componentWillUnmount() {
+    this.mounted = false;
     clearTimeout(this.timeout);
   }
 
@@ -211,6 +216,8 @@ export default class ActionButton extends Component {
       >
         <Touchable
           testID={this.props.testID}
+          accessible={this.props.accessible}
+          accessibilityLabel={this.props.accessibilityLabel}
           background={touchableBackground(
             this.props.nativeFeedbackRippleColor,
             this.props.fixNativeFeedbackRadius
@@ -237,8 +244,12 @@ export default class ActionButton extends Component {
   }
 
   _renderButtonIcon() {
-    const { icon, btnOutRangeTxt, buttonTextStyle, buttonText } = this.props;
-    if (icon) return icon;
+    const { icon, renderIcon, btnOutRangeTxt, buttonTextStyle, buttonText } = this.props;
+    if (renderIcon) return renderIcon(this.state.active);
+    if (icon) {
+      console.warn('react-native-action-button: The `icon` prop is deprecated! Use `renderIcon` instead.');
+      return icon;
+    }
 
     const textColor = buttonTextStyle.color || "rgba(255,255,255,1)";
 
@@ -265,7 +276,9 @@ export default class ActionButton extends Component {
 
     if (!this.state.active) return null;
 
-    const actionButtons = !Array.isArray(children) ? [children] : children;
+    let actionButtons = !Array.isArray(children) ? [children] : children;
+
+    actionButtons = actionButtons.filter( actionButton => (typeof actionButton == 'object') )
 
     const actionStyle = {
       flex: 1,
@@ -335,10 +348,11 @@ export default class ActionButton extends Component {
       this.anim.setValue(0);
     }
 
-    setTimeout(
-      () => this.setState({ active: false, resetToken: this.state.resetToken }),
-      250
-    );
+    setTimeout(() => {
+      if (this.mounted) {
+        this.setState({ active: false, resetToken: this.state.resetToken });  
+      }
+    }, 250);
   }
 }
 
@@ -359,6 +373,8 @@ ActionButton.propTypes = {
     PropTypes.array,
     PropTypes.number
   ]),
+
+  renderIcon: PropTypes.func,
 
   bgColor: PropTypes.string,
   bgOpacity: PropTypes.number,
@@ -384,7 +400,9 @@ ActionButton.propTypes = {
   fixNativeFeedbackRadius: PropTypes.bool,
   nativeFeedbackRippleColor: PropTypes.string,
 
-  testID: PropTypes.string
+  testID: PropTypes.string,
+  accessibilityLabel: PropTypes.string,
+  accessible: PropTypes.bool
 };
 
 ActionButton.defaultProps = {
@@ -414,7 +432,9 @@ ActionButton.defaultProps = {
   activeOpacity: DEFAULT_ACTIVE_OPACITY,
   fixNativeFeedbackRadius: false,
   nativeFeedbackRippleColor: "rgba(255,255,255,0.75)",
-  testID: undefined
+  testID: undefined,
+  accessibilityLabel: undefined,
+  accessible: undefined
 };
 
 const styles = StyleSheet.create({
