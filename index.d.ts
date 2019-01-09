@@ -28,6 +28,7 @@ export interface ActionButtonProperties extends ViewProperties {
   size?: number,
   autoInactive?: boolean,
   onPress?: () => void,
+  renderIcon?: (active: boolean) => React.ReactElement,
   backdrop?: boolean | object,
   degrees?: number,
   verticalOrientation?: 'up' | 'down',
@@ -40,6 +41,7 @@ export interface ActionButtonProperties extends ViewProperties {
 }
 
 export interface ActionButtonItemProperties extends ViewProperties {
+  size?: number,
   title?: string
   onPress?:	() => void
   buttonColor?:	string
